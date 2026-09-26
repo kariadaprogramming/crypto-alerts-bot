@@ -16,11 +16,12 @@
     "service:start": "net start CryptoAlertsBot",
     "service:stop": "net stop CryptoAlertsBot",
     "background": "start_background.bat",
-    "win:start": "powershell -ExecutionPolicy Bypass -File start_windows.ps1",
-    "win:status": "powershell -ExecutionPolicy Bypass -File manage_bot.ps1 status",
-    "win:logs": "powershell -ExecutionPolicy Bypass -File manage_bot.ps1 logs",
-    "win:stop": "powershell -ExecutionPolicy Bypass -File manage_bot.ps1 stop",
-    "win:restart": "powershell -ExecutionPolicy Bypass -File manage_bot.ps1 restart"
+    "bg:start": "node start_bg.js",
+    "bg:status": "node manage_bg.js status",
+    "bg:logs": "node manage_bg.js logs",
+    "bg:stop": "node manage_bg.js stop",
+    "bg:restart": "node manage_bg.js restart",
+    "bg:kill": "node manage_bg.js kill"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc14",
