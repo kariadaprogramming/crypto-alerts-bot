@@ -15,7 +15,12 @@
     "service:uninstall": "node uninstall_service.js",
     "service:start": "net start CryptoAlertsBot",
     "service:stop": "net stop CryptoAlertsBot",
-    "background": "start_background.bat"
+    "background": "start_background.bat",
+    "win:start": "powershell -ExecutionPolicy Bypass -File start_windows.ps1",
+    "win:status": "powershell -ExecutionPolicy Bypass -File manage_bot.ps1 status",
+    "win:logs": "powershell -ExecutionPolicy Bypass -File manage_bot.ps1 logs",
+    "win:stop": "powershell -ExecutionPolicy Bypass -File manage_bot.ps1 stop",
+    "win:restart": "powershell -ExecutionPolicy Bypass -File manage_bot.ps1 restart"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc14",
