@@ -1,6 +1,7 @@
 const sharp = require('sharp');
 const { chromium } = require('playwright');
 const config = require('../config');
+const groqAI = require('./groqAI');
 
 function toTitleCase(value) {
     return String(value || '').replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim() || 'Crypto';
@@ -16,7 +17,7 @@ function safeText(value, fallback = '-') {
 }
 
 function buildCardSvg(item) {
-    const ticker = safeText(item.ticker || item.symbol || 'CRYPTO', 'CRYPTO');
+    const ticker = safeText(item.ticker || item.symbol || item.coin || 'CRYPTO', 'CRYPTO');
     const name = safeText(item.name || toTitleCase(item.id || ticker), 'Crypto');
     const price = safeText(item.usd != null ? `$${Number(item.usd).toLocaleString('en-US', { maximumFractionDigits: 2 })}` : '—', '—');
     const pct1h = item.pct1h != null ? Number(item.pct1h) : null;
@@ -25,10 +26,18 @@ function buildCardSvg(item) {
     const cap = item.market_cap != null ? `$${Number(item.market_cap).toLocaleString('en-US', { maximumFractionDigits: 0 })}` : '—';
     const move1h = pct1h == null ? '—' : `${pct1h >= 0 ? '+' : ''}${pct1h.toFixed(2)}%`;
     const move24h = pct24h == null ? '—' : `${pct24h >= 0 ? '+' : ''}${pct24h.toFixed(2)}%`;
-    const direction = pct1h != null && pct1h >= 0 ? 'bullish' : 'bearish';
-    const bg = direction === 'bullish' ? '#071b13' : '#1b0b0d';
-    const accent = direction === 'bullish' ? '#18d58f' : '#ff5d73';
-    const glow = direction === 'bullish' ? '#0ef3a6' : '#ff6b7d';
+    
+    // Determine direction based on alert type
+    let direction = 'neutral';
+    if (item.alertType === 'whale') direction = item.direction === 'in' ? 'bullish' : 'bearish';
+    else if (item.alertType === 'liquidation') direction = item.type === 'long' ? 'bearish' : 'bullish';
+    else if (item.alertType === 'funding') direction = item.rate >= 0 ? 'bullish' : 'bearish';
+    else if (item.alertType === 'breakout') direction = item.direction === 'resistance' ? 'bullish' : 'bearish';
+    else if (pct1h != null) direction = pct1h >= 0 ? 'bullish' : 'bearish';
+    
+    const bg = direction === 'bullish' ? '#071b13' : direction === 'bearish' ? '#1b0b0d' : '#0b0e14';
+    const accent = direction === 'bullish' ? '#18d58f' : direction === 'bearish' ? '#ff5d73' : '#4a9eff';
+    const glow = direction === 'bullish' ? '#0ef3a6' : direction === 'bearish' ? '#ff6b7d' : '#6bb3ff';
     const caption = item.caption || 'CRYPTO ALERT';
 
     const svg = `
@@ -69,6 +78,9 @@ function buildCardSvg(item) {
       <text x="580" y="510" font-size="30" font-weight="700" fill="#ffffff" font-family="Arial, sans-serif">${cap}</text>
 
       <rect x="92" y="560" width="1000" height="8" rx="4" fill="url(#accent)" opacity="0.9"/>
+      
+      <!-- Watermark / Branding -->
+      <text x="1140" y="650" font-size="14" fill="#4a5a7a" font-family="Arial, sans-serif" text-anchor="end">FreeCryptoAlert</text>
     </svg>
     `;
 
@@ -105,14 +117,28 @@ async function buildAlertMedia(item) {
     const type = item.mediaType || 'card';
 
     try {
+        let caption = item.text;
+        
+        // Add AI-generated caption if enabled
+        if (config.groq?.enabled && config.groq?.imageCaption && groqAI.isAvailable()) {
+            try {
+                const aiCaption = await groqAI.generateImageCaption(item);
+                if (aiCaption) {
+                    caption = `${aiCaption}\n\n${item.text}`;
+                }
+            } catch (error) {
+                console.warn(`⚠️ AI caption generation failed:`, error.message);
+            }
+        }
+
         if (type === 'screenshot' || type === 'chart') {
             const img = await capturePageScreenshot(item.mediaUrl || item.url || item.chartUrl);
-            if (img) return { image: img, caption: item.text };
+            if (img) return { image: img, caption: caption };
         }
 
         if (type === 'card' || type === 'custom-card' || type === 'screenshot' || type === 'chart') {
             const img = await generateCustomCard(item);
-            if (img) return { image: img, caption: item.text };
+            if (img) return { image: img, caption: caption };
         }
     } catch (error) {
         console.warn(`⚠️ Gagal generate media untuk ${item.key || 'alert'}:`, error.message);

@@ -75,7 +75,7 @@ const config = {
 
     move1h: {
         enabled: bool('MOVE_1H_ENABLED', true),
-        threshold: num('MOVE_1H_THRESHOLD', 3),
+        threshold: num('MOVE_1H_THRESHOLD', 5), // Updated to 5% to avoid spam per WhatsApp optimization guide
         cooldownMs: num('MOVE_1H_COOLDOWN_MIN', 0) * MIN
     },
     move24h: {
@@ -95,17 +95,6 @@ const config = {
         threshold: num('TOP_MOVERS_THRESHOLD', 3),
         cooldownMs: num('TOP_MOVERS_COOLDOWN_HOURS', 6) * HOUR
     },
-    newListing: {
-        enabled: bool('NEW_LISTING_ALERT_ENABLED', true),
-        source: str('NEW_LISTING_SOURCE', 'both').toLowerCase(),
-        limit: num('NEW_LISTING_LIMIT', 5),
-        minMarketCapUsd: num('NEW_LISTING_MIN_MCAP_USD', 20000000),
-        minVolumeUsd: num('NEW_LISTING_MIN_VOLUME_USD', 5000000),
-        minPrice: num('NEW_LISTING_MIN_PRICE', 0.05),
-        minMovePct1h: num('NEW_LISTING_MIN_MOVE_PCT_1H', 3),
-        minMovePct24h: num('NEW_LISTING_MIN_MOVE_PCT_24H', 0),
-        cooldownMs: num('NEW_LISTING_COOLDOWN_HOURS', 12) * HOUR
-    },
     watchlist: {
         enabled: bool('WATCHLIST_ENABLED', true),
         coins: strList('WATCHLIST_COINS', ['BTC', 'ETH', 'SOL', 'BNB']),
@@ -117,7 +106,7 @@ const config = {
         cooldownMs: num('MILESTONE_COOLDOWN_MIN', 60) * MIN
     },
     fng: {
-        enabled: bool('FNG_ENABLED', true),
+        enabled: bool('FNG_ENABLED', false), // Disabled - now merged into Daily Market Briefing
         fearMax: num('FNG_FEAR_MAX', 20),
         greedMin: num('FNG_GREED_MIN', 80),
         cooldownMs: num('FNG_COOLDOWN_HOURS', 24) * HOUR,
@@ -133,23 +122,58 @@ const config = {
         enabled: bool('SUMMARY_ENABLED', true),
         hours: numList('SUMMARY_HOURS', [8, 20])
     },
+    whale: {
+        enabled: bool('WHALE_ALERT_ENABLED', false),
+        minUsd: num('WHALE_MIN_USD', 1000000),
+        targetExchange: str('WHALE_TARGET_EXCHANGE', 'binance'),
+        cooldownMs: num('WHALE_COOLDOWN_MIN', 30) * MIN
+    },
+    liquidation: {
+        enabled: bool('LIQ_ALERT_ENABLED', false),
+        minUsd: num('LIQ_MIN_USD', 10000000),
+        type: str('LIQ_TYPE', 'both'), // long | short | both
+        cooldownMs: num('LIQ_COOLDOWN_MIN', 60) * MIN
+    },
+    funding: {
+        enabled: bool('FUNDING_ALERT_ENABLED', false),
+        thresholdPct: num('FUNDING_THRESHOLD_PCT', 0.1),
+        cooldownMs: num('FUNDING_COOLDOWN_MIN', 60) * MIN
+    },
+    breakout: {
+        enabled: bool('BREAKOUT_ALERT_ENABLED', false),
+        timeframe: str('BREAKOUT_TIMEFRAME', '4h'),
+        volumeMultiplier: num('BREAKOUT_VOLUME_MULTIPLIER', 2),
+        cooldownMs: num('BREAKOUT_COOLDOWN_MIN', 240) * MIN
+    },
     media: {
         customCardsEnabled: bool('MEDIA_CUSTOM_CARDS_ENABLED', true),
         screenshotEnabled: bool('MEDIA_SCREENSHOT_ENABLED', false),
         screenshotTimeoutMs: num('MEDIA_SCREENSHOT_TIMEOUT_MS', 30000),
         cardWidth: num('MEDIA_CARD_WIDTH', 1200),
         cardHeight: num('MEDIA_CARD_HEIGHT', 675)
+    },
+    groq: {
+        enabled: bool('GROQ_ENABLED', false),
+        apiKey: str('GROQ_API_KEY', ''),
+        model: str('GROQ_MODEL', 'llama-3.3-70b-versatile'),
+        // AI Feature Toggles
+        marketAnalysis: bool('GROQ_MARKET_ANALYSIS', true),
+        breakoutAnalysis: bool('GROQ_BREAKOUT_ANALYSIS', true),
+        depegUrgency: bool('GROQ_DEPEG_URGENCY', true),
+        whaleLiquidation: bool('GROQ_WHALE_LIQUIDATION', true),
+        fundingSentiment: bool('GROQ_FUNDING_SENTIMENT', true),
+        marketBriefing: bool('GROQ_MARKET_BRIEFING', true),
+        conversational: bool('GROQ_CONVERSATIONAL', true),
+        smartSummarizer: bool('GROQ_SMART_SUMMARIZER', true),
+        imageCaption: bool('GROQ_IMAGE_CAPTION', true),
+        // Market Briefing Persona
+        briefingPersona: str('GROQ_BRIEFING_PERSONA', 'pragmatic') // pragmatic | degen | analyst | casual
     }
 };
 
 if (!['id', 'en', 'both'].includes(config.language)) {
     console.error('❌ LANGUAGE harus id, en, atau both. Nilai sekarang:', config.language);
     process.exit(1);
-}
-
-if (!['coingecko', 'binance', 'both'].includes(config.newListing.source)) {
-    console.error('❌ NEW_LISTING_SOURCE harus coingecko, binance, atau both. Nilai sekarang:', config.newListing.source);
-    config.newListing.source = 'both';
 }
 
 if (!config.targetId) {

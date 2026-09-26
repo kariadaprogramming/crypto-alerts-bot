@@ -23,5 +23,8 @@ module.exports = {
     volume: (...a) => build('volume', ...a),
     watchlist: (...a) => build('watchlist', ...a),
     topMovers: (...a) => build('topMovers', ...a),
-    newListing: (...a) => build('newListing', ...a)
+    whaleTracker: (...a) => build('whaleTracker', ...a),
+    liquidationAlert: (...a) => build('liquidationAlert', ...a),
+    fundingRateAlert: (...a) => build('fundingRateAlert', ...a),
+    breakoutAlert: (...a) => build('breakoutAlert', ...a)
 };

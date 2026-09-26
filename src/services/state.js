@@ -3,7 +3,7 @@
 const fs = require('fs');
 const config = require('../config');
 
-let data = { lastSent: {}, zones: {}, summarySlot: '', seenNewListings: {} };
+let data = { lastSent: {}, zones: {}, summarySlot: '' };
 
 try {
     if (fs.existsSync(config.stateFile)) {
@@ -40,4 +40,4 @@ function setZone(id, zone) { data.zones[id] = zone; save(); }
 function getSummarySlot() { return data.summarySlot; }
 function setSummarySlot(slot) { data.summarySlot = slot; save(); }
 
-module.exports = { canSend, markSent, getZone, setZone, getSummarySlot, setSummarySlot, getSeenListing, markSeenListing };
+module.exports = { canSend, markSent, getZone, setZone, getSummarySlot, setSummarySlot };

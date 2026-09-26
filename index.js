@@ -13,13 +13,15 @@ CRYPTO SIGNAL BOT: ${Object.values(config.coins).map((c) => c.ticker).join(', ')
   Gerak 24 jam    : ${on(config.move24h.enabled)} (>= ${config.move24h.threshold}%)
   Volume spike    : ${on(config.volume.enabled)} (>= ${config.volume.minMovePct}% / ${config.volume.minUsd.toLocaleString('id-ID')} USD)
   Top Movers      : ${on(config.topMovers.enabled)} (>= ${config.topMovers.threshold}%, limit ${config.topMovers.limit})
-  New Listing     : ${on(config.newListing.enabled)} (min vol ${config.newListing.minVolumeUsd.toLocaleString('id-ID')} USD | cap ${config.newListing.minMarketCapUsd.toLocaleString('id-ID')} USD)
+  Whale Tracker   : ${on(config.whale?.enabled)} (>= $${(config.whale?.minUsd || 0).toLocaleString('id-ID')})
+  Liquidation     : ${on(config.liquidation?.enabled)} (>= $${(config.liquidation?.minUsd || 0).toLocaleString('id-ID')})
+  Funding Rate    : ${on(config.funding?.enabled)} (>= ${(config.funding?.thresholdPct || 0) * 100}%)
+  Breakout        : ${on(config.breakout?.enabled)} (${config.breakout?.timeframe || '4h'})
   Watchlist       : ${on(config.watchlist.enabled)} (${config.watchlist.coins.join(', ')})
   Binance fallback: ${on(config.binance.enabled)}
   Milestone       : ${on(config.milestone.enabled)}
-  Fear & Greed    : ${on(config.fng.enabled)}
   Depeg USDT      : ${on(config.depeg.enabled)}
-  Ringkasan       : ${on(config.summary.enabled)} (jam ${config.summary.hours.join(', ')} ${config.timezone})
+  Daily Briefing  : ${on(config.summary.enabled)} (jam ${config.summary.hours.join(', ')} ${config.timezone})
 `);
 
 startWhatsApp({

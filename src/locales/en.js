@@ -96,17 +96,58 @@ function summary(ctx) {
         const idr = c.idr > 0 ? ` (${fmtIdr(c.idr)})` : '';
         return `${icon} *${c.ticker}*: ${fmtUsd(c.usd)}${idr} | 1H ${p1} | 24H ${p24}`;
     });
-    const fng = ctx.fng ? `\n🧭 *${ctx.fng.value}/100* (${ctx.fng.label})` : '';
-    return `📊 *MARKET SUMMARY*\n${rows.slice(0, 8).join('\n')}${fng}`;
+    const fng = ctx.fng ? `\n🧭 *Fear & Greed: ${ctx.fng.value}/100* (${ctx.fng.label})` : '';
+    return `📊 *DAILY MARKET BRIEFING*\n${rows.slice(0, 8).join('\n')}${fng}\n\n_Save bot number & stay tuned for more free signals._`;
 }
 
-function newListing(c) {
-    const symbol = c.ticker || c.name.toUpperCase();
-    const move1h = c.pct1h != null ? `${fmtPct(c.pct1h)} 1H` : 'NEW';
-    const volume = c.total_volume != null ? `Vol ${fmtUsd(c.total_volume)}` : 'Vol —';
-    const cap = c.market_cap != null ? `Cap ${fmtUsd(c.market_cap)}` : 'Cap —';
+// ✅ NEW: Whale Tracker Alert
+function whaleTracker(w) {
+    const dir = w.direction === 'in' ? '🐋 *WHALE IN*' : '🐋 *WHALE OUT*';
+    const exchange = w.exchange || 'Unknown';
+    const usd = w.usdValue != null ? `$${(w.usdValue / 1000000).toFixed(1)}M` : '—';
     return (
-`🆕 *${symbol}* | ${move1h} | ${volume} | ${cap}\n🔗 ${coinLink(c.id)}`);
+`${dir}
+🪙 *${w.coin}*: ${usd} from/to ${exchange}
+⏱️ Time: ${w.time || 'Just now'}
+🔗 ${w.txHash ? `Tx: ${w.txHash.slice(0, 8)}...` : 'N/A'}`);
 }
 
-module.exports = { move, milestone, fearGreed, depeg, summary, volume, watchlist, topMovers, newListing };
+// ✅ NEW: Liquidation Alert
+function liquidationAlert(l) {
+    const type = l.type === 'long' ? '🩸 *LONG LIQUIDATED*' : '🩸 *SHORT LIQUIDATED*';
+    const usd = l.usdValue != null ? `$${(l.usdValue / 1000000).toFixed(1)}M` : '—';
+    const price = l.price != null ? `$${l.price.toLocaleString()}` : '—';
+    return (
+`${type}
+🪙 *${l.coin}*: ${usd} wrecked
+💰 Price: ${price}
+⏱️ Time: ${l.time || 'Just now'}`);
+}
+
+// ✅ NEW: Funding Rate Alert
+function fundingRateAlert(f) {
+    const isPositive = f.rate >= 0;
+    const emoji = isPositive ? '🔥' : '❄️';
+    const type = isPositive ? 'FUNDING POSITIVE' : 'FUNDING NEGATIVE';
+    const rate = `${f.rate >= 0 ? '+' : ''}${(f.rate * 100).toFixed(4)}%`;
+    return (
+`${emoji} *${f.coin} ${type}*
+📊 Rate: ${rate}
+🏢 Exchange: ${f.exchange || 'Binance'}
+⏱️ Time: ${f.time || 'Just now'}`);
+}
+
+// ✅ NEW: Breakout Alert
+function breakoutAlert(c, b) {
+    const dir = b.direction === 'resistance' ? '🚀 *RESISTANCE BREAK*' : '📉 *SUPPORT BREAK*';
+    const level = b.level != null ? `$${b.level.toLocaleString()}` : '—';
+    const timeframe = b.timeframe || '4H';
+    return (
+`${dir}
+🪙 *${c.ticker}* breaks ${level}
+⏱️ Timeframe: ${timeframe}
+💰 Price: ${c.usd != null ? `$${c.usd.toLocaleString()}` : '—'}
+🔗 ${coinLink(c.id)}`);
+}
+
+module.exports = { move, milestone, fearGreed, depeg, summary, volume, watchlist, topMovers, whaleTracker, liquidationAlert, fundingRateAlert, breakoutAlert };

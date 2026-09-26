@@ -3,15 +3,26 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop crypto-alerts-bot",
+    "pm2:restart": "pm2 restart crypto-alerts-bot",
+    "pm2:delete": "pm2 delete crypto-alerts-bot",
+    "pm2:logs": "pm2 logs crypto-alerts-bot",
+    "pm2:status": "pm2 status",
+    "pm2:save": "pm2 save"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc14",
     "axios": "^1.20.0",
     "dotenv": "^18.0.1",
+    "groq-sdk": "^1.6.0",
     "pino": "^10.3.1",
     "playwright": "^1.63.0",
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.35.4"
+  },
+  "devDependencies": {
+    "pm2": "^7.0.4"
   }
 }

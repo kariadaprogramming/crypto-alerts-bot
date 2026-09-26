@@ -1,0 +1,24 @@
+const config = require('./src/config');
+
+console.log('=== KONFIGURASI BOT CRYPTO ALERTS ===\n');
+console.log('📱 Target Chat ID:', config.targetId || '❌ TIDAK DISET');
+console.log('🌐 Bahasa:', config.language);
+console.log('⏰ Interval:', config.checkIntervalMs / 60000, 'menit');
+console.log('🎯 Koin yang dipantau:', Object.values(config.coins).map(c => c.ticker).join(', '));
+console.log('\n=== FITUR YANG AKTIF ===');
+console.log('Gerak 1 jam:', config.move1h.enabled ? '✅' : '❌');
+console.log('Gerak 24 jam:', config.move24h.enabled ? '✅' : '❌');
+console.log('Volume spike:', config.volume.enabled ? '✅' : '❌');
+console.log('Top Movers:', config.topMovers.enabled ? '✅' : '❌');
+console.log('Whale Tracker:', config.whale?.enabled ? '✅' : '❌');
+console.log('Liquidation:', config.liquidation?.enabled ? '✅' : '❌');
+console.log('Funding Rate:', config.funding?.enabled ? '✅' : '❌');
+console.log('Breakout:', config.breakout?.enabled ? '✅' : '❌');
+console.log('Watchlist:', config.watchlist.enabled ? '✅' : '❌');
+console.log('Milestone:', config.milestone.enabled ? '✅' : '❌');
+console.log('Depeg USDT:', config.depeg.enabled ? '✅' : '❌');
+console.log('Daily Briefing:', config.summary.enabled ? '✅' : '❌');
+console.log('\n=== AI GROQ ===');
+console.log('Groq AI:', config.groq.enabled ? '✅' : '❌');
+console.log('Market Analysis:', config.groq.marketAnalysis ? '✅' : '❌');
+console.log('Market Briefing:', config.groq.marketBriefing ? '✅' : '❌');
