@@ -10,7 +10,12 @@
     "pm2:delete": "pm2 delete crypto-alerts-bot",
     "pm2:logs": "pm2 logs crypto-alerts-bot",
     "pm2:status": "pm2 status",
-    "pm2:save": "pm2 save"
+    "pm2:save": "pm2 save",
+    "service:install": "node install_service.js",
+    "service:uninstall": "node uninstall_service.js",
+    "service:start": "net start CryptoAlertsBot",
+    "service:stop": "net stop CryptoAlertsBot",
+    "background": "start_background.bat"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^7.0.0-rc14",
@@ -23,6 +28,7 @@
     "sharp": "^0.35.4"
   },
   "devDependencies": {
+    "node-windows": "^1.0.0-beta.8",
     "pm2": "^7.0.4"
   }
 }
