@@ -156,7 +156,7 @@ const config = {
         enabled: bool('GROQ_ENABLED', false),
         apiKey: str('GROQ_API_KEY', ''),
         model: str('GROQ_MODEL', 'llama-3.3-70b-versatile'),
-        // AI Feature Toggles
+        // AI Feature Toggles - All enabled by default for full AI integration
         marketAnalysis: bool('GROQ_MARKET_ANALYSIS', true),
         breakoutAnalysis: bool('GROQ_BREAKOUT_ANALYSIS', true),
         depegUrgency: bool('GROQ_DEPEG_URGENCY', true),

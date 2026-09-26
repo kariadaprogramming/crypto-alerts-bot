@@ -32,11 +32,12 @@ module.exports = {
                     }
                 }
 
+                const isNewsletter = config.targetId.endsWith('@newsletter');
                 items.push({
                     key: `volume:${c.id}`,
                     cooldownMs: config.volume.cooldownMs,
                     text: tpl.volume(c, c.pct1h, c.total_volume) + aiInsight,
-                    mediaType: 'card'
+                    mediaType: isNewsletter ? 'none' : 'card'
                 });
             }
         }

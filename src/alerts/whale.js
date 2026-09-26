@@ -32,12 +32,13 @@ module.exports = {
                     }
                 }
 
+                const isNewsletter = config.targetId.endsWith('@newsletter');
                 items.push({
                     key: `whale:${whale.txHash || whale.id}`,
                     group: `whale:${whale.coin}`,
                     cooldownMs: config.whale?.cooldownMs || 30 * 60 * 1000,
                     text: tpl.whaleTracker(whale) + aiAnalysis,
-                    mediaType: 'card'
+                    mediaType: isNewsletter ? 'none' : 'card'
                 });
             }
         }

@@ -28,12 +28,13 @@ module.exports = {
                     }
                 }
 
+                const isNewsletter = config.targetId.endsWith('@newsletter');
                 items.push({
                     key: `move24h:${c.id}`,
                     group: `move:${c.id}`, // kalau alert 1 jam sudah keluar, yang 24 jam dilewati
                     cooldownMs: config.move24h.cooldownMs,
                     text: tpl.move(c, c.pct24h, '24h') + aiInsight,
-                    mediaType: 'card'
+                    mediaType: isNewsletter ? 'none' : 'card'
                 });
             }
         }

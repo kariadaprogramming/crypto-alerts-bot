@@ -28,12 +28,13 @@ module.exports = {
                     }
                 }
 
+                const isNewsletter = config.targetId.endsWith('@newsletter');
                 items.push({
                     key: `move1h:${c.id}`,
                     group: `move:${c.id}`,
                     cooldownMs: config.move1h.cooldownMs,
                     text: tpl.move(c, c.pct1h, '1h') + aiInsight,
-                    mediaType: 'card'
+                    mediaType: isNewsletter ? 'none' : 'card'
                 });
             }
         }

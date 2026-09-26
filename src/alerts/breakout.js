@@ -25,12 +25,13 @@ module.exports = {
                     }
                 }
 
+                const isNewsletter = config.targetId.endsWith('@newsletter');
                 items.push({
                     key: `breakout:${c.id}:${c.breakout.level}`,
                     group: `breakout:${c.id}`,
                     cooldownMs: config.breakout?.cooldownMs || 4 * 60 * 60 * 1000,
                     text: tpl.breakoutAlert(c, c.breakout) + aiInsight,
-                    mediaType: 'card'
+                    mediaType: isNewsletter ? 'none' : 'card'
                 });
             }
         }

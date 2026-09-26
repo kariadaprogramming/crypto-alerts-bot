@@ -42,11 +42,12 @@ module.exports = {
         }
 
         // Daily Market Briefing - includes Fear & Greed (merged per WhatsApp optimization)
+        const isNewsletter = config.targetId.endsWith('@newsletter');
         return [{
             key: 'summary',
             cooldownMs: 0,
             text: tpl.summary(ctx) + aiBriefing,
-            mediaType: config.targetId.endsWith('@newsletter') ? 'none' : 'card', // Newsletter tidak support image
+            mediaType: isNewsletter ? 'none' : 'card', // Newsletter tidak support image
             onSent: () => state.setSummarySlot(slot)
         }];
     }

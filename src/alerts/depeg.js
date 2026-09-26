@@ -29,11 +29,12 @@ module.exports = {
                     }
                 }
 
+                const isNewsletter = config.targetId.endsWith('@newsletter');
                 items.push({
                     key: `depeg:${c.id}`,
                     cooldownMs: config.depeg.cooldownMs,
                     text: tpl.depeg(c) + aiUrgency,
-                    mediaType: 'card'
+                    mediaType: isNewsletter ? 'none' : 'card'
                 });
             }
         }

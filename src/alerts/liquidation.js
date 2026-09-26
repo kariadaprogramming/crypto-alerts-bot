@@ -38,12 +38,13 @@ module.exports = {
                     }
                 }
 
+                const isNewsletter = config.targetId.endsWith('@newsletter');
                 items.push({
                     key: `liquidation:${liq.id}`,
                     group: `liquidation:${liq.coin}`,
                     cooldownMs: config.liquidation?.cooldownMs || 60 * 60 * 1000,
                     text: tpl.liquidationAlert(liq) + aiAnalysis,
-                    mediaType: 'card'
+                    mediaType: isNewsletter ? 'none' : 'card'
                 });
             }
         }

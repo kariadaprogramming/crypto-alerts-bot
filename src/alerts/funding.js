@@ -33,12 +33,13 @@ module.exports = {
                     }
                 }
 
+                const isNewsletter = config.targetId.endsWith('@newsletter');
                 items.push({
                     key: `funding:${fund.coin}:${fund.exchange}`,
                     group: `funding:${fund.coin}`,
                     cooldownMs: config.funding?.cooldownMs || 60 * 60 * 1000,
                     text: tpl.fundingRateAlert(fund) + aiSentiment,
-                    mediaType: 'card'
+                    mediaType: isNewsletter ? 'none' : 'card'
                 });
             }
         }
